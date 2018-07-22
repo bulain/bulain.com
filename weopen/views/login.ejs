@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.3/weui.min.css">
+  <title>登录</title>
+  <style>
+    .empty-btn{
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="weui-cells weui-cells_form">
+    <div class="weui-cell weui-cell_vcode">
+      <div class="weui-cell__hd">
+        <label class="weui-label">手机号</label>
+      </div>
+      <div class="weui-cell__bd">
+        <input class="weui-input" type="tel" placeholder="请输入手机号">
+      </div>
+      <div class="weui-cell__ft">
+        <button class="weui-vcode-btn">获取验证码</button>
+      </div>
+    </div>
+    <div class="weui-cell weui-cell_vcode">
+      <div class="weui-cell__hd">
+        <label class="weui-label">验证码</label>
+      </div>
+      <div class="weui-cell__bd">
+        <input class="weui-input" type="number" placeholder="请输入验证码">
+      </div>
+      <div class="weui-cell__ft">
+          <button class="weui-vcode-btn empty-btn"></button>
+        </div>
+    </div>
+    <a class="weui-btn weui-btn_primary">登录</a>
+  </div>
+
+  <script type="text/javascript" src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.4/weui.min.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+</body>
+
+</html>
