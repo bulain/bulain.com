@@ -28,11 +28,11 @@ var shutdown = () => {
     client = null;
 };
 
-var dropCollection = async (colname) => {
+var drop = async (colname) => {
     const client = await setup();
     const db = client.db(dbname);
 
-    return db.dropCollection(colname);
+    return db.collection(colname).drop();
 };
 
 //保存单条记录
@@ -48,10 +48,10 @@ var insertMany = async (colname, arr) => {
     const client = await setup();
     const db = client.db(dbname);
 
-    if(!arr){
+    if (!arr) {
         return null;
     }
-    
+
     arr.forEach(obj => {
         if (obj._id) obj._id = ObjectId(obj._id);
     });
@@ -96,8 +96,8 @@ var deleteOne = async (colname, obj) => {
 //模块导出
 module.exports = {
     setup: setup,
-    dropCollection: dropCollection,
     shutdown: shutdown,
+    drop: drop,
     saveOne: saveOne,
     insertMany: insertMany,
     insertOrUpdateOne: insertOrUpdateOne,

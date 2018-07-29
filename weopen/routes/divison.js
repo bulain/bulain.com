@@ -32,7 +32,7 @@ router.post('/', function (req, res, next) {
                         arr.push({ code: $(tds[1]).text(), ltext: $(tds[2]).text() });
                 }
 
-                mongo.dropCollection('divison');
+                mongo.drop('divison');
                 mongo.insertMany('divison', arr);
 
                 res.render('divison', { title: 'Divison' });
@@ -46,7 +46,7 @@ router.post('/', function (req, res, next) {
     } else if (req.body.action == 'taobao') {
 
         (async function () {
-            await mongo.dropCollection('taobao');
+            await mongo.drop('taobao');
             var arr = [];
             var hm = [];
 
