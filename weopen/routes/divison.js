@@ -1,5 +1,5 @@
 var express = require('express');
-var http = require('http');
+var request = require('superagent');
 var cheerio = require('cheerio');
 var mongo = require('../lib/mongo');
 var taobao = require('../lib/taobao');
@@ -18,11 +18,10 @@ router.post('/', function (req, res, next) {
 
         var url = req.body.url || 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
         var buffers = [];
-        var reqx = http.request(url, function (resx) {
-            resx.on('data', function (chunk) {
-                buffers.push(chunk);
-            }).on('end', function () {
-                var data = Buffer.concat(buffers);
+        request.get(url)
+            .end((err, resx) => {
+                var data = resx.text;
+
                 var $ = cheerio.load(data);
                 var trs = $('tbody').find('tr');
                 var arr = [];
@@ -37,11 +36,6 @@ router.post('/', function (req, res, next) {
 
                 res.render('divison', { title: 'Divison' });
             });
-        }).on('error', function (e) {
-            console.log(e);
-            res.render('divison', { title: 'Divison' });
-        });
-        reqx.end();
 
     } else if (req.body.action == 'taobao') {
 
@@ -95,6 +89,18 @@ router.post('/', function (req, res, next) {
 
 
         res.render('divison', { title: 'Divison' });
+    } else if (req.body.action == 'town') {
+        //https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do?l1=440000&l2=440700&l3=440785&lang=zh-S&_ksTS=1532877390692_7890&callback=jsonp
+        function jsonp(data) {
+            console.log(data.result);
+        };
+
+        request.get('https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do')
+            .query({ l1: '440000', l2: '440700', l3: '440785', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
+            .end((err, resx) => {
+                eval(resx.text);
+                res.render('divison', { title: 'Divison' });
+            });
     }
 
 });
