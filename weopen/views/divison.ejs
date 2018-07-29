@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<%- include layouts/metas %>
+<%- include layouts/links %>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <form class="weui-cells weui-cells_form" method="POST">
+      <div class="weui-cell">
+        <div class="weui-cell__hd">
+          <label class="weui-label">解析地址</label>
+        </div>
+        <div class="weui-cell__bd">
+          <input class="weui-input" type="url" name="url" placeholder="请输入解析地址">
+        </div>
+      </div>
+      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="civil">民政局</button>
+      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="taobao">淘宝</button>
+    </form>
+<%- include layouts/scripts %>
+  </body>
+</html>

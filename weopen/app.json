@@ -1,0 +1,20 @@
+ {
+  "apps" : [
+    {
+      "name": "weopen",
+      "script": "./bin/www",
+      "env_prd": {
+        "NODE_ENV": "prd",
+        "PORT":"3000"
+      },
+      "env_dev":{
+        "NODE_ENV": "dev",
+        "PORT":"3001"
+      },
+      "watch": ["./", "bin", "routes", "views"],
+      "watch_options": {
+        "usePolling": true
+      }
+    }
+  ]
+}
