@@ -2,7 +2,9 @@ var express = require('express');
 var request = require('superagent');
 var cheerio = require('cheerio');
 var mongo = require('../lib/mongo');
+var mysql = require('../lib/mysql');
 var taobao = require('../lib/taobao');
+var tsimple = require('../lib/tsimple');
 
 var router = express.Router();
 router.get('/', function (req, res, next) {
@@ -33,6 +35,32 @@ router.post('/', function (req, res, next) {
 
                 mongo.drop('divison');
                 mongo.insertMany('divison', arr);
+
+                res.render('divison', { title: 'Divison' });
+            });
+
+    } else if (req.body.action == 'civilx') {
+
+        var url = req.body.url || 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
+        var buffers = [];
+        request.get(url)
+            .end((err, resx) => {
+                (async function () {
+                    var data = resx.text;
+
+                    var $ = cheerio.load(data);
+                    var trs = $('tbody').find('tr');
+
+                    await mysql.execute('delete from divison');
+                    var d = {};
+                    for (var i = 3; i < trs.length; i++) {
+                        var tds = $(trs[i]).find('td');
+                        if ($(tds[1]).text()) {
+                            d = { code: $(tds[1]).text(), ltext: $(tds[2]).text() };
+                            await mysql.execute('insert into divison (code, ltext) values (?, ?)', d.code, d.ltext);
+                        };
+                    }
+                })();
 
                 res.render('divison', { title: 'Divison' });
             });
@@ -87,6 +115,74 @@ router.post('/', function (req, res, next) {
             await mongo.insertMany('taobao', arr);
         })();
 
+
+        res.render('divison', { title: 'Divison' });
+    } else if (req.body.action == 'taobaox') {
+
+        (async function () {
+            await mysql.execute('delete from taobao');
+            var hm = [];
+            var d = {};
+
+            hm = taobao.province;
+            for (var a in hm) {
+                for (var b in hm[a]) {
+                    d = { code: hm[a][b][0], text: hm[a][b][1][0] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, null);
+                }
+            }
+
+            hm = taobao.city;
+            for (var b in hm) {
+                if (hm[b][3] == '0') {
+                    d = { code: hm[b][0], text: hm[b][1][0], parent: hm[b][2] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, d.parent);
+                } else if (hm[b][3] == '1') {
+                } else if (hm[b][3] == '2') {
+                } else if (hm[b][3] == '3') {
+                }
+            }
+
+            hm = taobao.hkmc;
+            for (var b in hm) {
+                if (hm[b][2] == '1') {
+                    d = { code: hm[b][0], text: hm[b][1][0] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, null);
+                } else {
+                    d = { code: hm[b][0], text: hm[b][1][0], parent: hm[b][2] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, d.parent);
+                }
+
+            }
+
+            hm = taobao.taiwan;
+            for (var b in hm) {
+                if (hm[b][2] == '2') {
+                    d = { code: hm[b][0], text: hm[b][1][0] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, null);
+                } else {
+                    d = { code: hm[b][0], text: hm[b][1][0], parent: hm[b][2] };
+                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, d.parent);
+                }
+            }
+
+        })();
+
+
+        res.render('divison', { title: 'Divison' });
+    } else if (req.body.action == 'taobaoy') {
+
+        (async function () {
+            await mysql.execute('delete from tsimple');
+            var hm = [];
+            var d = {};
+
+            hm = tsimple.city;
+            for (var a in hm) {
+                d = { code: a, text: hm[a][0], parent: hm[a][1] };
+                await mysql.execute('insert into tsimple (code, ltext, parent) values (?, ?, ?)', d.code, d.text, d.parent);
+            }
+        })();
 
         res.render('divison', { title: 'Divison' });
     } else if (req.body.action == 'town') {
