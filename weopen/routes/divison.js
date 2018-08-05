@@ -113,33 +113,48 @@ router.post('/', function (req, res, next) {
                 }
             }
             await mongo.insertMany('taobao', arr);
+
+            res.render('divison', { title: 'Divison' });
         })();
 
-
-        res.render('divison', { title: 'Divison' });
     } else if (req.body.action == 'taobaox') {
 
         (async function () {
             await mysql.execute('delete from taobao');
+            await mysql.execute('delete from talias');
             var hm = [];
             var d = {};
 
             hm = taobao.province;
             for (var a in hm) {
                 for (var b in hm[a]) {
-                    d = { code: hm[a][b][0], text: hm[a][b][1][0] };
-                    await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, null);
+                    d = { code: hm[a][b][0], text: hm[a][b][1][0], remarks: a };
+                    await mysql.execute('insert into taobao (code, text, parent, remarks) values (?, ?, ?, ?)', d.code, d.text, null, d.remarks);
                 }
             }
 
             hm = taobao.city;
+            var str = null;
             for (var b in hm) {
+                if(hm[b][0].indexOf(',') > 0){
+                    continue;
+                }
+
                 if (hm[b][3] == '0') {
                     d = { code: hm[b][0], text: hm[b][1][0], parent: hm[b][2] };
                     await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, d.parent);
                 } else if (hm[b][3] == '1') {
+                    str = hm[b][1][0].match(/(.*) \((.*)\)/);
+                    d = { code: hm[b][0], ltext: str[1], rtext: str[2], text: hm[b][1][0], parent: hm[b][2], lvl: hm[b][3] };              
+                    await mysql.execute('insert into talias (code, ltext, rtext, text, parent, lvl) values (?, ?, ?, ?, ?, ?)', d.code, d.ltext, d.rtext, d.text, d.parent, d.lvl);
                 } else if (hm[b][3] == '2') {
+                    str = hm[b][1][0].match(/(.*) \((.*)\)/);
+                    d = { code: hm[b][0], ltext: str[1], rtext: str[2], text: hm[b][1][0], parent: hm[b][2], lvl: hm[b][3] };              
+                    //await mysql.execute('insert into talias (code, ltext, rtext, text, parent, lvl) values (?, ?, ?, ?, ?, ?)', d.code, d.ltext, d.rtext, d.text, d.parent, d.lvl);
                 } else if (hm[b][3] == '3') {
+                    str = hm[b][1][0].split(' ');                    
+                    d = { code: hm[b][0], ltext: str[0], rtext: str[2], text: hm[b][1][0], parent: hm[b][2], lvl: hm[b][3] };       
+                        await mysql.execute('insert into talias (code, ltext, rtext, text, parent, lvl) values (?, ?, ?, ?, ?, ?)', d.code, d.ltext, d.rtext, d.text, d.parent, d.lvl);
                 }
             }
 
@@ -166,10 +181,10 @@ router.post('/', function (req, res, next) {
                 }
             }
 
+
+            res.render('divison', { title: 'Divison' });
         })();
-
-
-        res.render('divison', { title: 'Divison' });
+        
     } else if (req.body.action == 'taobaoy') {
 
         (async function () {
@@ -182,21 +197,51 @@ router.post('/', function (req, res, next) {
                 d = { code: a, text: hm[a][0], parent: hm[a][1] };
                 await mysql.execute('insert into tsimple (code, ltext, parent) values (?, ?, ?)', d.code, d.text, d.parent);
             }
+
+            res.render('divison', { title: 'Divison' });
         })();
 
-        res.render('divison', { title: 'Divison' });
+        
     } else if (req.body.action == 'town') {
         //https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do?l1=440000&l2=440700&l3=440785&lang=zh-S&_ksTS=1532877390692_7890&callback=jsonp
-        function jsonp(data) {
-            console.log(data.result);
+        async function jsonp(data) {
+            var c = data.result[0][0].substr(0,6);
+            var map = {'441901':'441900', '442001':'442000', '469003':'469003', '620201':'620200'};
+            var p = map[c];
+            for(var t in data.result){
+                var d = { code: data.result[t][0], text: data.result[t][1], parent: p };
+                await mysql.execute('insert into taobao (code, text, parent) values (?, ?, ?)', d.code, d.text, d.parent);
+            }
         };
 
+        (async function(){
+            await mysql.execute("delete from taobao where parent in ('441900', '442000', '469003', '620200')");
+        })();
+
+        //441900,442000,469003,620200
         request.get('https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do')
-            .query({ l1: '440000', l2: '440700', l3: '440785', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
+            .query({ l1: '440000', l2: '441900', l3: '', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
             .end((err, resx) => {
-                eval(resx.text);
-                res.render('divison', { title: 'Divison' });
+                eval(resx.text);                
             });
+        request.get('https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do')
+            .query({ l1: '440000', l2: '442000', l3: '', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
+            .end((err, resx) => {
+                eval(resx.text);                
+            });
+        request.get('https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do')
+            .query({ l1: '460000', l2: '469003', l3: '', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
+            .end((err, resx) => {
+                eval(resx.text);                
+            });
+        request.get('https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do')
+            .query({ l1: '620000', l2: '620200', l3: '', lang: 'zh-S', _ksTS: '1532877390692_7890', callback: 'jsonp' })
+            .end((err, resx) => {
+                eval(resx.text);                
+            });
+
+
+        res.render('divison', { title: 'Divison' });
     }
 
 });
