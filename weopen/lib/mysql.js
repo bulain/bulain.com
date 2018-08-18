@@ -1,5 +1,6 @@
 'use strict';
 const mysql = require('mysql');
+const mysqlconf = require('../database').mysql;
 const bluebird = require("bluebird");
 bluebird.promisifyAll(require("mysql/lib/Connection").prototype);
 bluebird.promisifyAll(require("mysql/lib/Pool").prototype);
@@ -9,15 +10,7 @@ var pool = null;
 //创建连接池
 var setup = () => {
     if (pool) return;
-    pool = mysql.createPool({
-        connectionLimit: 50,
-        host: 'localhost',
-        port: '3306',
-        user: 'weopen',
-        password: 'weopen',
-        database: 'weopen',
-        multipleStatements: true  //是否允许执行多条sql语句
-    });
+    pool = mysql.createPool(mysqlconf);
 };
 setup();
 

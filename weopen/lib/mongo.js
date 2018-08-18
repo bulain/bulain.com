@@ -1,23 +1,20 @@
 'use strict';
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
+const conf = require('../database').mongodb;
 
-const url = 'mongodb://localhost:27017';
-const dbname = 'weopen';
+const url = conf.url;
+const dbname = conf.dbname;
 
 var client = null;
 
 //初始化连接
 var setup = async () => {
     if (client) return client;
-    return client = await MongoClient.connect(url, {
-        useNewUrlParser: true,
-        poolSize: 50,
-        noDelay: false,
-        autoReconnect: true
-    }).catch(function (err) {
-        console.log(err);
-    });
+    return client = await MongoClient.connect(url,mongodbConf.options)
+        .catch(function (err) {
+            console.log(err);
+        });
 };
 
 //关闭连接
