@@ -10,8 +10,10 @@
         "multipleStatements": true 
     },
     "mongodb": {
-        "url": "mongodb://localhost:27017",
-        "dbname": "weopen",
+        "driver": "mongodb",
+        "host": "localhost",
+        "database": "weopen",
+        "url": "mongodb://localhost:27017",        
         "options": {
             "useNewUrlParser": true,
             "poolSize": 50,

@@ -28,3 +28,12 @@
 * 选用rabbitmq作为消息服务
 * 选用pm2作为部署管理
 
+#### 数据库初始化(mysql)
+* db-migrate --migrations-dir=migrations/mysql  create "create table talais"
+* db-migrate --migrations-dir=migrations/mysql  --env=mysql up
+* db-migrate --migrations-dir=migrations/mysql  --env=mysql down -s 4
+
+#### 数据库初始化(mongodb)
+* db-migrate --migrations-dir=migrations/mongodb  create "create collection talais"
+* db-migrate --migrations-dir=migrations/mongodb  --env=mongodb up
+* db-migrate --migrations-dir=migrations/mongodb  --env=mysql down -s 4

@@ -4,7 +4,7 @@ const ObjectId = require('mongodb').ObjectId;
 const conf = require('../database').mongodb;
 
 const url = conf.url;
-const dbname = conf.dbname;
+const dbname = conf.database;
 
 var client = null;
 
