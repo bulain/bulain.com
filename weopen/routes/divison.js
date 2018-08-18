@@ -15,10 +15,12 @@ router.get('/', function (req, res, next) {
 router.post('/', function (req, res, next) {
 
     console.log(req.body);
+    var action = req.body.action;
+    var dbtype = req.body.dbtype;
 
-    if (req.body.action == 'civil') {
+    if (action == 'divison' && dbtype == 'mongodb') {
 
-        var url = req.body.url || 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
+        var url = 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
         var buffers = [];
         request.get(url)
             .end((err, resx) => {
@@ -39,9 +41,9 @@ router.post('/', function (req, res, next) {
                 res.render('divison', { title: 'Divison' });
             });
 
-    } else if (req.body.action == 'civilx') {
+    } else if (action == 'divison' && dbtype == 'mysql') {
 
-        var url = req.body.url || 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
+        var url = 'http://preview.www.mca.gov.cn/article/sj/xzqh/2018/201805/20180506280855.html';
         var buffers = [];
         request.get(url)
             .end((err, resx) => {
@@ -65,7 +67,7 @@ router.post('/', function (req, res, next) {
                 res.render('divison', { title: 'Divison' });
             });
 
-    } else if (req.body.action == 'taobao') {
+    } else if (action == 'taobao' && dbtype == 'mongodb') {
 
         (async function () {
             await mongo.drop('taobao');
@@ -117,7 +119,7 @@ router.post('/', function (req, res, next) {
             res.render('divison', { title: 'Divison' });
         })();
 
-    } else if (req.body.action == 'taobaox') {
+    } else if (action == 'taobao' && dbtype == 'mysql') {
 
         (async function () {
             await mysql.execute('delete from taobao');
@@ -185,7 +187,7 @@ router.post('/', function (req, res, next) {
             res.render('divison', { title: 'Divison' });
         })();
         
-    } else if (req.body.action == 'taobaoy') {
+    } else if (action == 'tsimple' && dbtype == 'mysql') {
 
         (async function () {
             await mysql.execute('delete from tsimple');
@@ -202,7 +204,7 @@ router.post('/', function (req, res, next) {
         })();
 
         
-    } else if (req.body.action == 'town') {
+    } else if (action == 'town' && dbtype == 'mysql') {
         //https://lsp.wuliu.taobao.com/locationservice/addr/output_address_town_array.do?l1=440000&l2=440700&l3=440785&lang=zh-S&_ksTS=1532877390692_7890&callback=jsonp
         async function jsonp(data) {
             var c = data.result[0][0].substr(0,6);
@@ -241,6 +243,8 @@ router.post('/', function (req, res, next) {
             });
 
 
+        res.render('divison', { title: 'Divison' });
+    } else {
         res.render('divison', { title: 'Divison' });
     }
 

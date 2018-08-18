@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-<%- include layouts/metas %>
-<%- include layouts/links %>
-    <title><%= title %></title>
-  </head>
-  <body>
-    <form class="weui-cells weui-cells_form" method="POST">
-      <div class="weui-cell">
-        <div class="weui-cell__hd">
-          <label class="weui-label">解析地址</label>
+
+<head>
+  <%- include layouts/metas %>
+    <%- include layouts/links %>
+      <title>
+        <%= title %>
+      </title>
+</head>
+
+<body>
+  <div class="page">
+    <div class="page__bd" style="height: 100%;">
+      <div class="weui-tab">
+        <div class="weui-navbar">
+          <div class="weui-navbar__item weui-bar__item_on">
+            Mysql
+          </div>
+          <div class="weui-navbar__item">
+            Mongodb
+          </div>
         </div>
-        <div class="weui-cell__bd">
-          <input class="weui-input" type="url" name="url" placeholder="请输入解析地址">
+        <div class="weui-tab__panel">
+          <form class="weui-cells weui-cells_form" method="POST">
+            <input type="hidden" id="dbtype" name="dbtype" value="mysql">
+            <button class="weui-btn weui-btn_primary" type="submit" name="action" value="divison">民政局省市区</button>
+            <button class="weui-btn weui-btn_primary" type="submit" name="action" value="taobao">淘宝省市区</button>
+            <button class="weui-btn weui-btn_primary" type="submit" name="action" value="tsimple">淘宝全称</button>
+            <button class="weui-btn weui-btn_primary" type="submit" name="action" value="town">淘宝乡镇</button>
+          </form>
         </div>
       </div>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="civil">民政局省市区</button>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="civilx">民政局省市区(mysql)</button>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="taobao">淘宝省市区</button>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="taobaox">淘宝省市区(mysql)</button>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="taobaoy">淘宝全称(mysql)</button>
-      <button class="weui-btn weui-btn_primary" type="submit" name="action" value="town">淘宝乡镇</button>
-    </form>
-<%- include layouts/scripts %>
-  </body>
+    </div>
+  </div>
+  <%- include layouts/scripts %>
+    <script>
+      $(function () {
+        $('.weui-navbar__item').on('click', function () {
+          $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+          $('#dbtype').val($('#dbtype').val() == 'mysql' ? 'mongodb' : 'mysql');
+        });
+      });
+    </script>
+</body>
+
 </html>

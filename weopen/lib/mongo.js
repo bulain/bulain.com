@@ -11,7 +11,7 @@ var client = null;
 //初始化连接
 var setup = async () => {
     if (client) return client;
-    return client = await MongoClient.connect(url,mongodbConf.options)
+    return client = await MongoClient.connect(url,conf.options)
         .catch(function (err) {
             console.log(err);
         });

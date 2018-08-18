@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addIndex('talias', 'idx_talias_1', 'code', true)  ;
+  return db.addIndex('talias', 'idx_talias_1', 'code', false)  ;
 };
 
 exports.down = function(db) {
