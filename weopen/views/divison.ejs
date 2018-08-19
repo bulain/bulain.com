@@ -14,12 +14,8 @@
     <div class="page__bd" style="height: 100%;">
       <div class="weui-tab">
         <div class="weui-navbar">
-          <div class="weui-navbar__item weui-bar__item_on">
-            Mysql
-          </div>
-          <div class="weui-navbar__item">
-            Mongodb
-          </div>
+          <div class="weui-navbar__item weui-bar__item_on">mysql</div>
+          <div class="weui-navbar__item">mongodb</div>
         </div>
         <div class="weui-tab__panel">
           <form class="weui-cells weui-cells_form" method="POST">
@@ -38,7 +34,7 @@
       $(function () {
         $('.weui-navbar__item').on('click', function () {
           $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
-          $('#dbtype').val($('#dbtype').val() == 'mysql' ? 'mongodb' : 'mysql');
+          $('#dbtype').val($(this).text().trim());
         });
       });
     </script>
